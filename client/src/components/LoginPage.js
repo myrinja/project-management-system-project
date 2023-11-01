@@ -7,7 +7,6 @@ function LoginPage() {
  const handleSubmit = (e) => {
     e.preventDefault();
     console.log('User Logged in with username:', username);
-    history.push('/');
  };
 
  return (
