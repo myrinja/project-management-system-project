@@ -20,7 +20,7 @@ const LandingPage = () => {
     alignItems: 'center',
     justifyContent: 'center',
     height: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.5)', // Add a semi-transparent white background for better readability
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Add a semi-transparent white background for better readability
   };
 
   return (
