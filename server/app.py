@@ -26,6 +26,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
     content = db.Column(db.Text, nullable=False)
+    image_url = db.Column(db.String(200), nullable=True)
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     categories = db.relationship('Category', secondary='post_category', backref='posts', lazy=True)
@@ -66,7 +67,7 @@ def get_all_users():
 @app.route('/posts', methods=['POST'])
 def create_post():
     data = request.get_json()
-    new_post = Post(title=data['title'], content=data['content'], user_id=data['user_id'])
+    new_post = Post(title=data['title'], content=data['content'], user_id=data['user_id'], image_url=data['image_url'])
     db.session.add(new_post)
     db.session.commit()
     return jsonify({'message': 'Post created successfully!'})
@@ -82,6 +83,7 @@ def get_all_posts():
             'id': post.id,
             'title': post.title,
             'content': post.content,
+            'image_url': post.image_url,
             'date_posted': post.date_posted,
             'author': post.author.username,
             'categories': [category.name for category in post.categories]
@@ -98,6 +100,7 @@ def get_post(post_id):
     post_data['id'] = post.id
     post_data['title'] = post.title
     post_data['content'] = post.content
+    post_data['image_url'] = post.image_url
     post_data['date_posted'] = post.date_posted
     post_data['author'] = post.author.username
     post_data['categories'] = [category.name for category in post.categories]
@@ -110,6 +113,7 @@ def update_post(post_id):
     data = request.get_json()
     post.title = data['title']
     post.content = data['content']
+    post.image = data['image_url']
     post.date_posted = datetime.utcnow()
     db.session.commit()
     return jsonify({'message': 'Post updated successfully!'})
