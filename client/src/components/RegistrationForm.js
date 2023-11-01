@@ -8,7 +8,6 @@ function RegistrationForm() {
  const handleSubmit = (e) => {
     e.preventDefault();
     console.log('User Registered with username:', username);
-    history.push('/login');
  };
 
  return (
