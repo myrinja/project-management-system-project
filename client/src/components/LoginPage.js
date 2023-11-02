@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
 
 function LoginPage() {
- const [username, setUsername] = useState('');
- const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
- const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    console.log('User Logged in with username:', username);
- };
 
- return (
+    // Handle user login here.
+  };
+
+  return (
     <div>
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
