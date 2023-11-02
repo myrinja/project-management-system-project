@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import styles from './RegistrationForm.module.css';
 
 function RegistrationForm() {
   const [username, setUsername] = useState('');
@@ -34,7 +35,7 @@ function RegistrationForm() {
   };
 
   return (
-    <div>
+    <div className={styles.registrationForm}>
       <h2>Registration</h2>
       <form onSubmit={handleSubmit}>
         <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
