@@ -1,16 +1,39 @@
 import React, { useState } from 'react';
-import { Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 function RegistrationForm() {
- const [username, setUsername] = useState('');
- const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
- const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('User Registered with username:', username);
- };
 
- return (
+    // Register the user with the backend API.
+    const response = await fetch('/api/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        password,
+      }),
+    });
+
+    // Check if the registration was successful.
+    if (response.status === 200) {
+      // Show an alert to the user that their account was created successfully.
+      alert('Your account was created successfully!');
+
+      // Redirect the user to the login page.
+      window.location.href = '/login';
+    } else {
+      // Show an alert to the user that their account creation failed.
+      alert('There was an error creating your account. Please try again later.');
+    }
+  };
+
+  return (
     <div>
       <h2>Registration</h2>
       <form onSubmit={handleSubmit}>
@@ -20,7 +43,7 @@ function RegistrationForm() {
       </form>
       <p>Already have an account? <Link to="/login">Login</Link></p>
     </div>
- );
+  );
 }
 
 export default RegistrationForm;
