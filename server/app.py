@@ -83,11 +83,12 @@ def get_all_posts():
             'title': post.title,
             'content': post.content,
             'date_posted': post.date_posted,
-            'author': post.author.username,
+            'author': post.author.username if post.author is not None else None,
             'categories': [category.name for category in post.categories]
         }
         output.append(post_data)
     return jsonify({'posts': output})
+
 
 
 # Get a single post by ID
