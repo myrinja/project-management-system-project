@@ -1,54 +1,67 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import './PostForm.css'; 
 
-const PostForm = ({ onPostSubmit }) => {
-  const [name, setName] = useState('');
-  const [description, setDescription] = useState('');
-  const [image, setImage] = useState(null);
+function PostForm() {
+  const [formData, setFormData] = useState({
+    title: '',
+    content: '',
+    user_id: 1,
+    image_url: '',
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onPostSubmit({ name, description, image });
-    setName('');
-    setDescription('');
-    setImage(null);
+
+    axios
+      .post('http://127.0.0.1:5000/posts', formData)
+      .then((response) => {
+        console.log('Post created successfully:', response.data);
+      })
+      .catch((error) => {
+        console.error('Error creating post:', error);
+      });
   };
 
   return (
-    <div className="container">
+    <div className="post-form-container">
       <h2>Create a New Post</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3">
-          <label htmlFor="name" className="form-label">Blog Name</label>
+      <form onSubmit={handleSubmit} className="post-form">
+        <div className="form-group">
+          <label>Title:</label>
           <input
             type="text"
-            className="form-control"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            name="title"
+            value={formData.title}
+            onChange={handleChange}
           />
         </div>
-        <div className="mb-3">
-          <label htmlFor="description" className="form-label">Description</label>
+        <div className="form-group">
+          <label>Content:</label>
           <textarea
-            className="form-control"
-            id="description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
+            name="content"
+            value={formData.content}
+            onChange={handleChange}
           />
         </div>
-        <div className="mb-3">
-          <label htmlFor="image" className="form-label">Upload an Image</label>
+        <div className="form-group">
+          <label>Image URL:</label>
           <input
-            type="file"
-            className="form-control"
-            id="image"
-            onChange={(e) => setImage(e.target.files[0])}
+            type="text"
+            name="image_url"
+            value={formData.image_url}
+            onChange={handleChange}
           />
         </div>
-        <button type="submit" className="btn btn-primary">Submit</button>
+        <button type="submit">Submit</button>
       </form>
     </div>
   );
-};
+}
 
 export default PostForm;
