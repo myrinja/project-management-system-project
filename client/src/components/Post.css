@@ -1,7 +1,7 @@
 .posts-container {
     padding: 20px;
   }
-  
+  /*grid for image*/
   .post-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
