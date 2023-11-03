@@ -4,6 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime
 from flask_cors import CORS 
+from werkzeug.security import generate_password_hash, check_password_hash
+
 
 app = Flask(__name__)
 
@@ -150,6 +152,45 @@ def get_all_categories():
         category_data['posts'] = [post.title for post in category.posts]
         output.append(category_data)
     return jsonify({'categories': output})
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    # Check if the provided credentials are valid (implement your own logic)
+    if username == 'your_username' and password == 'your_password':
+        # Consider using a more secure authentication method in production
+        return jsonify({'message': 'Login successful'}), 200
+    else:
+        return jsonify({'message': 'Invalid username or password'}), 401
+
+@app.route('/api/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    # Check if the username or password is missing
+    if not username or not password:
+        return jsonify({'error': 'Both username and password are required'}), 400
+
+    # Check if the username already exists
+    existing_user = User.query.filter_by(username=username).first()
+    if existing_user:
+        return jsonify({'error': 'Username already exists'}), 400
+
+    # Hash the password before storing it
+    hashed_password = generate_password_hash(password, method='sha256')
+
+    # Create a new user and add it to the database
+    new_user = User(username=username, password=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+
+    return jsonify({'message': 'User registered successfully'}), 200
+
 
 if __name__ == '__main__':
     # Create the database tables
