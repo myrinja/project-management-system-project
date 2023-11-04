@@ -11,6 +11,7 @@ const About = () => {
           </p>
           <p>
             Feel free to explore the various posts and share your thoughts in the comments.
+            Post Haven is the place to be.
           </p>
           <p>
             If you have any questions or suggestions, don't hesitate to <a href="/contact">contact me</a>.
