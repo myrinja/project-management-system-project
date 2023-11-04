@@ -7,7 +7,7 @@ const Posts = () => {
   const [posts, setPosts] = useState([]);
   const navigate = useNavigate();
 
-  useEffect(() => {g
+  useEffect(() => {
     axios.get('http://localhost:5000/posts')
       .then(response => {
         setPosts(response.data.posts);
