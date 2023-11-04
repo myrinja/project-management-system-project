@@ -1,26 +1,53 @@
 import React, { useState } from 'react';
-import { Link} from 'react-router-dom';
+import './RegistrationForm.css';
 
-function RegistrationForm() {
- const [username, setUsername] = useState('');
- const [password, setPassword] = useState('');
+const RegistrationForm = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
 
- const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('User Registered with username:', username);
- };
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
- return (
-    <div>
-      <h2>Registration</h2>
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    console.log(formData);
+  };
+
+  return (
+    <div className="registration-form-container">
+      <h2>Registration Form</h2>
       <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <button type="submit">Register</button>
+        <div className="form-group">
+          <label htmlFor="firstName">First Name:</label>
+          <input type="text" name="firstName" id="firstName" value={formData.firstName} onChange={handleChange} className="form-control" />
+        </div>
+        <div className="form-group">
+          <label htmlFor="lastName">Last Name:</label>
+          <input type="text" name="lastName" id="lastName" value={formData.lastName} onChange={handleChange} className="form-control" />
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input type="email" name="email" id="email" value={formData.email} onChange={handleChange} className="form-control" />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input type="password" name="password" id="password" value={formData.password} onChange={handleChange} className="form-control" />
+        </div>
+        <div className="form-group">
+          <label htmlFor="confirmPassword">Confirm Password:</label>
+          <input type="password" name="confirmPassword" id="confirmPassword" value={formData.confirmPassword} onChange={handleChange} className="form-control" />
+        </div>
+        <button type="submit" className="btn btn-primary">Register</button>
       </form>
-      <p>Already have an account? <Link to="/login">Login</Link></p>
     </div>
- );
-}
+  );
+};
 
 export default RegistrationForm;

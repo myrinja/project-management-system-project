@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import './PostForm.css'; 
+import './PostForm.css'; // Import your CSS file here
 
 function PostForm() {
   const [formData, setFormData] = useState({
@@ -9,6 +9,8 @@ function PostForm() {
     user_id: 1,
     image_url: '',
   });
+
+  const [isPostCreated, setIsPostCreated] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -21,10 +23,11 @@ function PostForm() {
     axios
       .post('http://127.0.0.1:5000/posts', formData)
       .then((response) => {
-        console.log('Post created successfully:', response.data);
+        setIsPostCreated(true); // Set the flag to true on successful post creation
       })
       .catch((error) => {
         console.error('Error creating post:', error);
+        setIsPostCreated(false); // Set the flag to false on error
       });
   };
 
@@ -59,6 +62,7 @@ function PostForm() {
           />
         </div>
         <button type="submit">Submit</button>
+        {isPostCreated && <p>Post created successfully</p>} {/* Display message on success */}
       </form>
     </div>
   );
