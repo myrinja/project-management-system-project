@@ -2,6 +2,8 @@ from flask import Flask
 from app import db, Post, Category, User
 from faker import Faker
 import random
+import string
+from flask_bcrypt import Bcrypt 
 
 app = Flask(__name__)
 
@@ -13,6 +15,9 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Configure the app with your database
 db.init_app(app)
+
+# Initialize Bcrypt
+bcrypt = Bcrypt(app)
 
 # Generate random categories and image URLs
 categories = [
@@ -45,22 +50,35 @@ image_urls = [
     "https://images.pexels.com/photos/235621/pexels-photo-235621.jpeg?auto=compress&cs=tinysrgb&w=400",
     "https://media.istockphoto.com/id/1450272068/photo/wind-sun-and-water-energy.webp?b=1&s=612x612&w=0&k=20&c=kqzh30craD6AVukqNYdkovgcP4gxV3QN6lgs07b1YUg=",
     "https://cdn.pixabay.com/photo/2023/10/20/17/19/pumpkin-8329917_640.jpg"
-  
 ]
+
+# Create a function to generate random email addresses
+def generate_random_email():
+    username = ''.join(random.choice(string.ascii_letters) for _ in range(8))
+    domain = random.choice(['example.com', 'test.com', 'yourdomain.com'])
+    return f"{username}@{domain}"
+
+# Create a function to generate random passwords
+def generate_random_password():
+    # Generate a random string of characters (you can customize the length and content)
+    return ''.join(random.choice(string.ascii_letters + string.digits) for _ in range(8))
 
 # Create a new user with random data
 def create_random_user():
     username = fake.name()
-    user = User(username=username)
+    email = generate_random_email()
+    password = generate_random_password()
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    user = User(username=username, email=email, password=hashed_password)
     db.session.add(user)
 
 # Create a new blog post with random data
 def create_random_blog_post():
     title = fake.sentence()
     content = fake.text()
-    author = random.choice(User.query.all())  
-    category = random.choice(categories)  
-    image_url = random.choice(image_urls)  
+    author = random.choice(User.query.all())
+    category = random.choice(categories)
+    image_url = random.choice(image_urls)
     post = Post(title=title, content=content, user_id=author.id, image_url=image_url)
     db.session.add(post)
 
