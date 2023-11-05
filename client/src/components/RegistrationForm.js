@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import './RegistrationForm.css';
-
 const RegistrationForm = () => {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    username: '',
     email: '',
     password: '',
-    confirmPassword: ''
   });
+
+  const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -17,7 +18,26 @@ const RegistrationForm = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log(formData);
+
+    fetch('http://127.0.0.1:5000/registration', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    })
+      .then((response) => {
+        if (response.status === 201) {
+          setSuccess('Registration successful! You can now log in.');
+          setError(null);
+        } else if (response.status === 401) {
+          setError('Invalid email or password. Please check your input.');
+          setSuccess(null);
+        } else {
+          setError('An error occurred. Please try again later.');
+          setSuccess(null);
+        }
+      });
   };
 
   return (
@@ -25,26 +45,43 @@ const RegistrationForm = () => {
       <h2>Registration Form</h2>
       <form onSubmit={handleSubmit}>
         <div className="form-group">
-          <label htmlFor="firstName">First Name:</label>
-          <input type="text" name="firstName" id="firstName" value={formData.firstName} onChange={handleChange} className="form-control" />
-        </div>
-        <div className="form-group">
-          <label htmlFor="lastName">Last Name:</label>
-          <input type="text" name="lastName" id="lastName" value={formData.lastName} onChange={handleChange} className="form-control" />
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            className="form-control"
+          />
         </div>
         <div className="form-group">
           <label htmlFor="email">Email:</label>
-          <input type="email" name="email" id="email" value={formData.email} onChange={handleChange} className="form-control" />
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="form-control"
+          />
         </div>
         <div className="form-group">
           <label htmlFor="password">Password:</label>
-          <input type="password" name="password" id="password" value={formData.password} onChange={handleChange} className="form-control" />
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            className="form-control"
+          />
         </div>
-        <div className="form-group">
-          <label htmlFor="confirmPassword">Confirm Password:</label>
-          <input type="password" name="confirmPassword" id="confirmPassword" value={formData.confirmPassword} onChange={handleChange} className="form-control" />
-        </div>
-        <button type="submit" className="btn btn-primary">Register</button>
+        <button type="submit" className="btn btn-primary">
+          Register
+        </button>
+        {success && <p className="success">{success}</p>}
+        {error && <p className="error">{error}</p>}
+        <p>
+          Don't have an account? <Link to="/login" className="registration-link">Login here</Link>
+        </p>
       </form>
     </div>
   );
