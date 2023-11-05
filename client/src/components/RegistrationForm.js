@@ -1,50 +1,90 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import styles from './RegistrationForm.module.css';
+import './RegistrationForm.css';
+const RegistrationForm = () => {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+  });
 
-function RegistrationForm() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [success, setSuccess] = useState(null);
+  const [error, setError] = useState(null);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleChange = (event) => {
+    const { name, value } = event.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    // Register the user with the backend API.
-    const response = await fetch('/api/register', {
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    fetch('http://127.0.0.1:5000/registration', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({
-        username,
-        password,
-      }),
-    });
-
-    // Check if the registration was successful.
-    if (response.status === 200) {
-      // Show an alert to the user that their account was created successfully.
-      alert('Your account was created successfully!');
-
-      // Redirect the user to the login page.
-      window.location.href = '/login';
-    } else {
-      // Show an alert to the user that their account creation failed.
-      alert('There was an error creating your account. Please try again later.');
-    }
+      body: JSON.stringify(formData),
+    })
+      .then((response) => {
+        if (response.status === 201) {
+          setSuccess('Registration successful! You can now log in.');
+          setError(null);
+        } else if (response.status === 401) {
+          setError('Invalid email or password. Please check your input.');
+          setSuccess(null);
+        } else {
+          setError('An error occurred. Please try again later.');
+          setSuccess(null);
+        }
+      });
   };
 
   return (
-    <div className={styles.registrationForm}>
-      <h2>Registration</h2>
+    <div className="registration-form-container">
+      <h2>Registration Form</h2>
       <form onSubmit={handleSubmit}>
-        <input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-        <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <button type="submit">Register</button>
+        <div className="form-group">
+          <label htmlFor="username">Username:</label>
+          <input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+            className="form-control"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            name="email"
+            value={formData.email}
+            onChange={handleChange}
+            className="form-control"
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="password">Password:</label>
+          <input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+            className="form-control"
+          />
+        </div>
+        <button type="submit" className="btn btn-primary">
+          Register
+        </button>
+        {success && <p className="success">{success}</p>}
+        {error && <p className="error">{error}</p>}
+        <p>
+          Don't have an account? <Link to="/login" className="registration-link">Login here</Link>
+        </p>
       </form>
-      <p>Already have an account? <Link to="/login">Login</Link></p>
     </div>
   );
-}
+};
 
 export default RegistrationForm;

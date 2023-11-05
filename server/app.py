@@ -4,8 +4,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from datetime import datetime
 from flask_cors import CORS 
+from flask_bcrypt import Bcrypt
+
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -20,10 +23,50 @@ CORS(app)
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
-    
+    email = db.Column(db.String(100), unique=True, nullable=False)
+    password = db.Column(db.String(60), nullable=False)  
     posts = db.relationship('Post', backref='author', lazy=True)
 
+
+
+# Create a new user
+@app.route('/registration', methods=['POST'])
+def register_user():
+    data = request.get_json()
+
+    if 'username' not in data or 'email' not in data or 'password' not in data:
+        return jsonify({'error': 'Missing required fields'}), 400
+
+    # Check if the username or email is already taken
+    existing_user = User.query.filter_by(username=data['username']).first()
+    existing_email = User.query.filter_by(email=data['email']).first()
     
+    if existing_user:
+        return jsonify({'error': 'Username already exists'}), 409
+    if existing_email:
+        return jsonify({'error': 'Email already exists'}), 409
+
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    new_user = User(username=data['username'], email=data['email'], password=hashed_password)
+
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({'message': 'User registered successfully'}), 201
+
+# Create a login route
+@app.route('/login', methods=['POST'])
+def login_user():
+    data = request.get_json()
+
+    if 'email' not in data or 'password' not in data:
+        return jsonify({'error': 'Missing email or password'}), 400
+
+    user = User.query.filter_by(email=data['email']).first()
+
+    if user and bcrypt.check_password_hash(user.password, data['password']):
+        return jsonify({'message': 'Login successful'}), 200  
+    else:
+        return jsonify({'error': 'Incorrect email or password'}), 401
 
 class Post(db.Model):
     id = db.Column(db.Integer, primary_key=True)
