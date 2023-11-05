@@ -11,7 +11,7 @@ const EditPost = () => {
   });
 
   const { post_id } = useParams();
-  const navigate = useNavigate();
+  const history = useNavigate();
 
   useEffect(() => {
     axios.get(`http://localhost:5000/posts/${post_id}`)
@@ -27,13 +27,15 @@ const EditPost = () => {
     axios
       .put(`http://localhost:5000/posts/${post_id}`, post)
       .then(() => {
-        navigate(`/posts/${post_id}`);
+        // Navigate back to the Posts page
+        history('/posts');
       })
       .catch(error => {
         console.error('Error updating post:', error);
       });
   };
   
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setPost({ ...post, [name]: value });
