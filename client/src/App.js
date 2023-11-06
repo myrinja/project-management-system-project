@@ -1,24 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+// import LandingPage from './components/LandingPage';
+import RegistrationForm from './components/RegistrationForm';
+import LoginForm from './components/LoginForm';
+import Navbar from './components/Navbar';
+import Posts from './components/Posts';
+import PostForm from './components/PostForm';
+import PostDetail from './components/PostDetail';
+import EditPost from './components/ EditPost';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <Navbar />
+        <Routes>
+          <Route path="/posts" element={<Posts />} />
+          <Route path="/register" element={<RegistrationForm />} />
+          <Route path="/login" element={<LoginForm />} />
+          {/* <Route path="/posts" element={<Posts />} /> */}
+          <Route path="/postform" element={<PostForm />} />
+          <Route path="/posts/:post_id" element={<PostDetail />} />
+          <Route path="/posts/:post_id/edit" element={<EditPost />} />
+
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
