@@ -23,7 +23,7 @@ const Navbar = () => {
               <Link className="nav-link" to="/posts">Posts</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/postform">AddBlog</Link>
+              <Link className="nav-link" to="/postform">Add Blog</Link>
             </li>
             {/* Add a link to PostDetail here */}
             <li className="nav-item">
