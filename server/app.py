@@ -12,7 +12,7 @@ from flask_bcrypt import Bcrypt
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get("DATABASE_URI")
+app.config['SQLALCHEMY_DATABASE_URL'] = os.environ.get("DATABASE_URI")
 #DATABASE_URI
 #'sqlite:///blog.db'
 #postgres://posthaven_user:U2nAG4OZl2cuRz06CUyEC9RWB3mZrrrU@dpg-cl54kcil7jac73cc35r0-a.oregon-postgres.render.com/posthaven
