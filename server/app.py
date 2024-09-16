@@ -1,3 +1,4 @@
+import os
 from flask import Flask,request, jsonify
 from flask import Flask, request, jsonify, render_template, redirect, flash
 from flask_sqlalchemy import SQLAlchemy
@@ -7,10 +8,15 @@ from flask_cors import CORS
 from flask_bcrypt import Bcrypt
 
 
+
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///blog.db'
+app.config['SQLALCHEMY_DATABASE_URL'] = os.environ.get("DATABASE_URI")
+#DATABASE_URI
+#'sqlite:///blog.db'
+#postgres://posthaven_user:U2nAG4OZl2cuRz06CUyEC9RWB3mZrrrU@dpg-cl54kcil7jac73cc35r0-a.oregon-postgres.render.com/posthaven
+
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'your_secret_key'
 
